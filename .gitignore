@@ -2,3 +2,7 @@ GoogleNews-vectors-negative300.bin
 .ipynb_checkpoints
 .vscode
 __pycache__
+.idea
+.DS_Store
+models/
+data/
