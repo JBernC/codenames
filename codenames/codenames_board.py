@@ -13,11 +13,13 @@ class CodenamesGame:
     allows for construction, per team play and guesses
     """
 
-    def __init__(self, custom_cards=None, custom_map=None, is_played=False, words_loc='words.txt'):
+    def __init__(
+        self, custom_cards=None, custom_map=None, is_played=False, words_loc="words.txt"
+    ):
         self.current_team = "red" if random.randint(2) else "blue"
         self.winning_team = None
         self.round_score = 0
-        self.revealed = [False]*25
+        self.revealed = [False] * 25
         self.custom_cards = custom_cards
         self.custom_map = custom_map
         self.word_loc = words_loc
@@ -30,8 +32,12 @@ class CodenamesGame:
         else:
             self.spymaster_map = self.generate_map()
         # self.assassin = self.codename_cards[self.spymaster_map['assassin'][0]]
+        self.remaining_cards = self.codename_cards
+
     def __repr__(self):
-        remaining_cards = [c for idx, c in enumerate(self.codename_cards) if not self.revealed[idx]]
+        remaining_cards = [
+            c for idx, c in enumerate(self.codename_cards) if not self.revealed[idx]
+        ]
         return f"remaining cards ({len(remaining_cards)}): {remaining_cards}\nspymaster map: {self.spymaster_map}"
 
     def get_game(self):
@@ -53,12 +59,15 @@ class CodenamesGame:
     def get_current_turn(self):
         return self.current_team
 
-    def get_remaining_cards(self):
+    def set_remaining_cards(self):
+        self.remaining_cards = [
+            c for idx, c in enumerate(self.codename_cards) if not self.revealed[idx]
+        ]
 
     def generate_map(self):
         """Randomly creates the mapping that the spymaster will see at the start of the game
 
-        Returns:
+        Returns:Ò
             array -- an array of shape (25,1) representing the locations of the agents and neutrals
         """
         board_indexes = np.arange(0, 25)
@@ -88,21 +97,22 @@ class CodenamesGame:
             self.round_score -= 9
             self.winning_team = "red" if self.current_team == "blue" else "blue"
             logging.info(f"{self.winning_team} wins!")
-
-            return None
-        if agent_type == self.current_team:
+        elif agent_type == self.current_team:
             logging.info(f"{self.current_team} guessed correctly!")
             self.round_score += 1
-            return None
-        if agent_type == "neutral":
+        elif agent_type == "neutral":
             logging.info(f"{self.current_team} tagged a neutral")
             self.next_turn()
-            return None
-        if agent_type != self.current_team:
+        elif agent_type != self.current_team:
             logging.info(f"ooft, {self.current_team} revealed an enemy")
             self.round_score -= 1
             self.next_turn()
-            return None
+        self.set_remaining_cards()
+        
+        idxs = self.spymaster_map[self.current_team]
+        if all([x for idx, x in enumerate(self.revealed) if idx in idxs]):
+            self.winning_team = self.current_team
+        return agent_type
 
     def process_guess(self, word):
         """Runs through the board state and marks the word as revealed, 
@@ -121,11 +131,12 @@ class CodenamesGame:
             if word_idx in word_list:
                 return agent_type
 
-        return "No card found!!!"
+        return None
 
     def next_turn(self):
         self.current_team = "red" if self.current_team == "blue" else "blue"
         self.round_score = 0
+
 
 #
 # game = CodenamesGame(words_loc='words.txt')
