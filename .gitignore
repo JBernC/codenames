@@ -5,4 +5,7 @@ __pycache__
 .idea
 .DS_Store
 models/
-data/
+
+data/10k_no_play.h5
+data/wiki-news-300d-1M-subword.vec
+data/wiki-news-300d-1M-subword.vec.zip

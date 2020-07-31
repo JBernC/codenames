@@ -54,7 +54,7 @@ class CodenamesGame:
     def get_cards(self):
         with open(self.word_loc, "r", newline="\n") as inputfile:
             words = inputfile.read().split("\n")
-        return random.choice(words, 25)
+        return sample(words, 25)
 
     def get_current_turn(self):
         return self.current_team
