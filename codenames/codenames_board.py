@@ -124,7 +124,7 @@ class CodenamesGame:
         Returns:
             string -- the type of agent revealed
         """
-        word_idx = self.codename_cards.tolist().index(word)
+        word_idx = self.codename_cards.index(word)
         self.revealed[word_idx] = True
 
         for agent_type, word_list in self.spymaster_map.items():
